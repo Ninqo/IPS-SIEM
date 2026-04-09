@@ -35,7 +35,7 @@ Le système est configuré pour détecter et bloquer activement :
 ## 📂 Organisation du Dépôt
 - `📂 architecture/` : Schémas réseau et fichiers Cisco Packet Tracer.
 - `📂 configs/` : Fichiers de règles Suricata (`local.rules`) et configuration Wazuh.
-- `📂 scripts/` : Script d'attaque Kali (`utiliser dans un environnement local`).
+- `📂 scripts/` : Script d'attaque sans machine Kali (`utiliser dans un environnement local`).
 - `📂 vms/` : Guide de configuration des machines virtuelles.
 
 ---
