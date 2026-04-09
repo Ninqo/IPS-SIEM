@@ -1,4 +1,4 @@
-\# 🖥️ Spécifications des Machines Virtuelles (VirtualBox)
+# 🖥️ Spécifications des Machines Virtuelles (VirtualBox)
 
 
 
@@ -6,13 +6,13 @@ Ce document détaille la configuration nécessaire pour chaque machine du labora
 
 
 
-\## ⚙️ Paramètres Globaux Critiques
+# ⚙️ Paramètres Globaux Critiques
 
 Pour que Suricata puisse intercepter le trafic en mode IPS, les réglages suivants sont \*\*obligatoires\*\* dans VirtualBox :
 
-\- \*\*Mode Promiscuité :\*\* `Tout autoriser` (Paramètres > Réseau > Avancé).
+- **Mode Promiscuité :** `Tout autoriser` (Paramètres > Réseau > Avancé).
 
-\- \*\*Type de carte :\*\* `Paravirtualized Network (virtio-net)` (Indispensable pour éviter les erreurs de driver Tx Unit Hang).
+- **Type de carte :** `Paravirtualized Network (virtio-net)` (Indispensable pour éviter les erreurs de driver Tx Unit Hang).
 
 
 
@@ -20,7 +20,7 @@ Pour que Suricata puisse intercepter le trafic en mode IPS, les réglages suivan
 
 
 
-\## 1. Gateway (Passerelle de sécurité)
+## 1. Gateway (Passerelle de sécurité)
 
 C'est le cœur de l'infrastructure où sont installés \*\*Suricata\*\* et l'\*\*Agent Wazuh\*\*.
 
@@ -30,15 +30,15 @@ C'est le cœur de l'infrastructure où sont installés \*\*Suricata\*\* et l'\*\
 
 | :--- | :--- |
 
-| \*\*OS\*\* | Debian 12 (64-bit) |
+| **OS** | Debian 12 (64-bit) |
 
-| \*\*CPU / RAM\*\* | 2 vCPU / 2 Go RAM |
+| **CPU / RAM** | 2 vCPU / 2 Go RAM |
 
-| \*\*Adaptateur 1\*\* | Accès par pont (Accès Internet / WAN) |
+| **Adaptateur 1** | Accès par pont (Accès Internet / WAN) |
 
-| \*\*Adaptateur 2\*\* | Réseau interne : `iot-network` (LAN Protégé) |
+| **Adaptateur 2** | Réseau interne : `iot-network` (LAN Protégé) |
 
-| \*\*Rôle\*\* | Routage, NAT, Filtrage IPS (NFQUEUE) |
+| **Rôle** | Routage, NAT, Filtrage IPS (NFQUEUE) |
 
 
 
@@ -46,7 +46,7 @@ C'est le cœur de l'infrastructure où sont installés \*\*Suricata\*\* et l'\*\
 
 
 
-\## 2. ITProjet (Cible IoT)
+## 2. ITProjet (Cible IoT)
 
 Représente l'objet connecté ou le serveur industriel à protéger.
 
@@ -56,15 +56,15 @@ Représente l'objet connecté ou le serveur industriel à protéger.
 
 | :--- | :--- |
 
-| \*\*OS\*\* | Debian 12 (64-bit) |
+| **OS** | Debian 12 (64-bit) |
 
-| \*\*CPU / RAM\*\* | 1 vCPU / 1 Go RAM |
+| **CPU / RAM** | 1 vCPU / 1 Go RAM |
 
-| \*\*Adaptateur 1\*\* | Réseau interne : `iot-network` |
+| **Adaptateur 1** | Réseau interne : `iot-network` |
 
-| \*\*Passerelle par défaut\*\* | `192.168.1.1` (IP de la Gateway) |
+| **Passerelle par défaut** | `192.168.1.1` (IP de la Gateway) |
 
-| \*\*Services\*\* | Broker MQTT (Mosquitto), SSH |
+| **Services** | Broker MQTT (Mosquitto), SSH |
 
 
 
@@ -72,7 +72,7 @@ Représente l'objet connecté ou le serveur industriel à protéger.
 
 
 
-\## 3. Wazuh Manager (SIEM)
+## 3. Wazuh Manager (SIEM)
 
 Le centre de contrôle qui reçoit et analyse les alertes de sécurité.
 
@@ -82,11 +82,11 @@ Le centre de contrôle qui reçoit et analyse les alertes de sécurité.
 
 | :--- | :--- |
 
-| \*\*OS\*\* | Ubuntu 22.04 LTS |
+| **OS** | Ubuntu 22.04 LTS |
 
-| \*\*CPU / RAM\*\* | 2 vCPU / 4 Go RAM (Minimum recommandé : 6 Go) |
+| **CPU / RAM** | 2 vCPU / 4 Go RAM (Minimum recommandé : 6 Go) |
 
-| \*\*Stockage\*\* | 50 Go (SSD recommandé pour les index d'alertes) |
+| **Stockage** | 50 Go (SSD recommandé pour les index d'alertes) |
 
 | \*\*Adaptateur 1\*\* | Accès par pont (Bridge) |
 
@@ -98,21 +98,21 @@ Le centre de contrôle qui reçoit et analyse les alertes de sécurité.
 
 
 
-\## 🛠️ Procédure de mise en route rapide
+## 🛠️ Procédure de mise en route rapide
 
-1\. \*\*Démarrer la Gateway\*\* et activer l'IP Forwarding :
+1. **Démarrer la Gateway** et activer l'IP Forwarding :
 
 &nbsp;  `sysctl -w net.ipv4.ip\_forward=1`
 
-2\. \*\*Démarrer l'ITProjet\*\* et vérifier la route par défaut vers la Gateway :
+2. **Démarrer l'ITProjet** et vérifier la route par défaut vers la Gateway :
 
 &nbsp;  `ip route add default via 192.168.1.1` (si non configuré en statique).
 
-3\. \*\*Lancer Suricata en mode IPS\*\* sur la Gateway :
+3. **Lancer Suricata en mode IPS** sur la Gateway :
 
 &nbsp;  `suricata -c /etc/suricata/suricata.yaml -q 0`
 
-4\. \*\*Appliquer la redirection NFQUEUE\*\* :
+4. **Appliquer la redirection NFQUEUE** :
 
 &nbsp;  `iptables -I FORWARD -j NFQUEUE --queue-num 0`
 
